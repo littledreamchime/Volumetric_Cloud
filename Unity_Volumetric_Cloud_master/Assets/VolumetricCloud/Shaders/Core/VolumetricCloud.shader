@@ -62,11 +62,8 @@ Shader "Hidden/VolumetricCloudSystem/VolumetricCloud"
                 #else
                 float depth = 1.0;
                 #endif
-
-                float4 ndc = float4(OUT.uv * 2.0 - 1.0, depth, 1.0);
-                float4 worldPos = mul(_CameraInvVP, ndc);
-                worldPos /= worldPos.w;
-
+                
+                float4 worldPos=GetSceneWorldPos(OUT.uv,_CameraInvVP,depth);
                 OUT.viewVector = worldPos.xyz - _WorldSpaceCameraPos.xyz;
 
                 return OUT;
@@ -87,12 +84,7 @@ Shader "Hidden/VolumetricCloudSystem/VolumetricCloud"
                 }
 
                 float rawDepth = SampleSceneDepth(IN.uv);
-                float4 sceneNDC = float4(IN.uv * 2.0 - 1.0, rawDepth, 1.0);
-                float4 sceneWorldPos = mul(_CameraInvVP, sceneNDC);
-                sceneWorldPos /= sceneWorldPos.w; //物体的坐标
-
-                //物体到摄像机的距离
-                float sceneDistance = length(sceneWorldPos.xyz - rayOrigin);
+                float sceneDistance=GetSceneDepthDistance(IN.uv,rayOrigin,_CameraInvVP,rawDepth);
 
                 if (sceneDistance <= dstToBox) //如果其他物体到镜头的距离 比 这个Shader近
                 {
@@ -105,12 +97,9 @@ Shader "Hidden/VolumetricCloudSystem/VolumetricCloud"
                 //2.如果在外部，则dstInsideBox<maxTravelDistance
                 float actualTravelDistance = min(dstInsideBox,maxTravelDistance);
                 
-                float dstRatio= actualTravelDistance / (_MaxOpacityDistance + 0.0001);
-                float baseOpacity = saturate (dstRatio);
-                float density = baseOpacity * _DensityMultiplier;
-                density = saturate(density);
+                float alpha=CalculateVolumetricAlpha(rayOrigin,rayDir,dstToBox,actualTravelDistance,_DensityMultiplier,_MaxOpacityDistance);
 
-                return half4(_BaseColor.rgb, density * _BaseColor.a);
+                return half4(_BaseColor.rgb, alpha * _BaseColor.a);
             }
             ENDHLSL
         }
