@@ -1,6 +1,14 @@
 #ifndef VOLUMETRIC_CLOUD_MATH_INCLUDED
 #define VOLUMETRIC_CLOUD_MATH_INCLUDED
 
+struct CloudVolumeData
+{
+    float3 boundsMin;
+    float density;
+    float3 boundsMax;
+    float padding;
+    float4 color;
+};
 //射线和包围盒的相交检测
 //rayOrigin:射线起点 Camera Position
 //rayDir:射线方向
@@ -9,7 +17,7 @@
 //返回值（dstTobox:射线起点到包围盒的距离，dstInsideBox:射线在盒子内部穿行的距离）
 float2 RayBoxIntersection(float3 rayOrigin, float3 rayDir, float3 boxMin, float3 boxMax)
 {
-    float3 invDir = 1.0 / rayDir;
+    float3 invDir = 1.0 / (rayDir+0.0000001);
     float3 t0 = (boxMin - rayOrigin) * invDir;
     float3 t1 = (boxMax - rayOrigin) * invDir;
 
@@ -43,27 +51,56 @@ float GetSceneDepthDistance(float2 uv, float3 rayOrigin, float4x4 cameraInvVP, f
     return length(sceneWorldPos.xyz - rayOrigin);
 }
 
+//判断一个点是否在AABB盒子中的内部
+bool IsPointInsideBox(float3 pos,float3 boxMin,float3 boxMax)
+{
+    return pos.x >= boxMin.x && pos.x <= boxMax.x &&
+           pos.y >= boxMin.y && pos.y <= boxMax.y &&
+           pos.z >= boxMin.z && pos.z <= boxMax.z;
+}
+
+
 //步进循环计算(经过步进stepCount的次数后，计算体积雾的最终Alpha值)
-//actualTraveDistance:射线实际在其中穿过的距离
+//actualTravelDistance:射线实际在其中穿过的距离
 //densityMultiplier:浓度控制
 //maxOpacityDistance:雾到完全不透明程度所需要射线穿行的距离
-float CalculateVolumetricAlpha(float3 rayOrigin, float3 rayDir, float dstToBox, float actualTraveDistance, float densityMultiplier, float maxOpacityDistance)
+half4 CalculateVolumetricAlpha(float3 rayOrigin, float3 rayDir, float dstToBox, float actualTravelDistance,int cloudVolumeCount,StructuredBuffer<CloudVolumeData> cloudVolumes)
 {
-    int stepCount = 32;
-    float stepSize = actualTraveDistance / stepCount;
+    int stepCount = 128;
+    float stepSize = actualTravelDistance / stepCount;
     float3 rayPos = rayOrigin + rayDir * dstToBox;
     float transmittance=1.0;
+    float4 finalColor = float4(0.0,0.0,0.0,0.0); //累加颜色
     
-    float baseExtinction = 4.605/(maxOpacityDistance+0.0001);
     
     for (int i=0; i<stepCount; i++)
     {
-        float localDensity = 1.0; //可以替换为3D噪声采样
+        float currentDensity=0.0f;
+        float3 currentColor=float3(0.0,0.0,0.0);
+        float colorWeight=0.0;
         
-         if (localDensity > 0)
+        for (int j=0;j<cloudVolumeCount;j++)
+        {
+            CloudVolumeData vol = cloudVolumes[j];
+            if (IsPointInsideBox(rayPos,vol.boundsMin,vol.boundsMax))
+            {
+                float localDensity = 1.0 * vol.density;
+                
+                currentDensity += localDensity;
+                currentColor += vol.color.rgb * localDensity;
+                colorWeight += localDensity;
+            }
+        }
+        
+         if (currentDensity > 0)
          {
-             float extinction = localDensity * densityMultiplier * baseExtinction;
+             currentColor /= colorWeight;
+             float extinction = currentDensity ;
              float stepTransmittance=exp(-extinction * stepSize);
+             
+             float alpha = (1.0 - stepTransmittance);
+             finalColor.rgb += currentColor * alpha * transmittance;
+             
              transmittance *= stepTransmittance;
              
              if (transmittance < 0.01)
@@ -74,8 +111,11 @@ float CalculateVolumetricAlpha(float3 rayOrigin, float3 rayDir, float dstToBox, 
          }
         rayPos += rayDir * stepSize;
     }
-    return 1.0 - transmittance;
+    float finalAlpha = 1.0 - transmittance;
+    
+    return half4(finalColor.rgb , finalAlpha);
 }
+
 
 
 #endif

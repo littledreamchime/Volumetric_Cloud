@@ -1,12 +1,7 @@
 Shader "Hidden/VolumetricCloudSystem/VolumetricCloud"
 {
     Properties
-    {
-        _MainTex ("Texture", 2D) = "white" {}
-        _BaseColor("Base Color",Color)=(1.0, 0.0, 0.0, 0.3)
-        _DensityMultiplier("Density Multiplier", Range(0.0,2.0)) = 0.1
-        _MaxOpacityDistance("Max Opacity Distance",Range(0.0,100))=5
-    }
+    {  }
     SubShader
     {
         Tags
@@ -17,7 +12,7 @@ Shader "Hidden/VolumetricCloudSystem/VolumetricCloud"
         ZWrite Off
         Cull Off
         ZTest Always
-        Blend SrcAlpha OneMinusSrcAlpha
+        Blend One OneMinusSrcAlpha
 
         Pass
         {
@@ -28,15 +23,13 @@ Shader "Hidden/VolumetricCloudSystem/VolumetricCloud"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
             #include "../Includes/RaymarchMath.hlsl"
-
-            CBUFFER_START(UnityPerMaterial)
-                half4 _BaseColor;
-                float _DensityMultiplier;
-                float _MaxOpacityDistance;
-            CBUFFER_END
-
-            float3 _CloudBoundsMin;
-            float3 _CloudBoundsMax;
+ 
+            
+            StructuredBuffer<CloudVolumeData> _CloudVolumes;
+            int _CloudVolumeCount;
+            
+            float3 _GlobalBoundsMin;
+            float3 _GlobalBoundsMax;
             float4x4 _CameraInvVP;
 
             struct Attributes
@@ -74,7 +67,7 @@ Shader "Hidden/VolumetricCloudSystem/VolumetricCloud"
                 float3 rayOrigin = _WorldSpaceCameraPos.xyz;
                 float3 rayDir = normalize(IN.viewVector);
 
-                float2 rayBoxInfo = RayBoxIntersection(rayOrigin, rayDir, _CloudBoundsMin, _CloudBoundsMax);
+                float2 rayBoxInfo = RayBoxIntersection(rayOrigin, rayDir, _GlobalBoundsMin, _GlobalBoundsMax);
                 float dstToBox = rayBoxInfo.x;
                 float dstInsideBox = rayBoxInfo.y;
 
@@ -97,9 +90,11 @@ Shader "Hidden/VolumetricCloudSystem/VolumetricCloud"
                 //2.如果在外部，则dstInsideBox<maxTravelDistance
                 float actualTravelDistance = min(dstInsideBox,maxTravelDistance);
                 
-                float alpha=CalculateVolumetricAlpha(rayOrigin,rayDir,dstToBox,actualTravelDistance,_DensityMultiplier,_MaxOpacityDistance);
+                
+                
+                half4 targetColor=CalculateVolumetricAlpha(rayOrigin,rayDir,dstToBox,actualTravelDistance,_CloudVolumeCount,_CloudVolumes);
 
-                return half4(_BaseColor.rgb, alpha * _BaseColor.a);
+                return targetColor;
             }
             ENDHLSL
         }

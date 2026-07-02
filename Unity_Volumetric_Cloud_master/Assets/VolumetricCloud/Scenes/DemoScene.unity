@@ -119,6 +119,104 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &169755701
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 169755703}
+  - component: {fileID: 169755702}
+  m_Layer: 0
+  m_Name: CloudB
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &169755702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 169755701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f0cd2a0c732469f837b808d84f2017b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volumeSize: {x: 100, y: 50, z: 100}
+  cloudColor: {r: 1, g: 0, b: 0, a: 1}
+  densityMultipler: 0.203
+  maxOpacityDistance: 77.1
+  lineColor: {r: 0.047481313, g: 0.9150943, b: 0.86568946, a: 0.08235294}
+--- !u!4 &169755703
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 169755701}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 70.5, y: 0, z: 28.7}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &328053959
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 328053961}
+  - component: {fileID: 328053960}
+  m_Layer: 0
+  m_Name: CloudC
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &328053960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 328053959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f0cd2a0c732469f837b808d84f2017b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volumeSize: {x: 100, y: 50, z: 100}
+  cloudColor: {r: 0, g: 0, b: 1, a: 1}
+  densityMultipler: 0.203
+  maxOpacityDistance: 77.1
+  lineColor: {r: 0.047481313, g: 0.9150943, b: 0.86568946, a: 0.08235294}
+--- !u!4 &328053961
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 328053959}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 49.6, y: 0, z: -13.6}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -480,7 +578,7 @@ Transform:
   m_GameObject: {fileID: 509198599}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.6827569, y: -5.25, z: -1.6946718}
+  m_LocalPosition: {x: 48.9, y: -5.25, z: 8.4}
   m_LocalScale: {x: 4.8184, y: 4.8184, z: 4.8184}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -499,7 +597,7 @@ GameObject:
   - component: {fileID: 705429645}
   - component: {fileID: 705429644}
   m_Layer: 0
-  m_Name: A
+  m_Name: CloudA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -517,8 +615,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f0cd2a0c732469f837b808d84f2017b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  volumeSize: {x: 10, y: 10, z: 10}
-  cloudMaterial: {fileID: 2100000, guid: bd5b3c3109ed77649b5b536b4421f7a8, type: 2}
+  volumeSize: {x: 100, y: 50, z: 100}
+  cloudColor: {r: 0, g: 1, b: 0, a: 1}
+  densityMultipler: 0.203
+  maxOpacityDistance: 77.1
+  lineColor: {r: 0.047481313, g: 0.9150943, b: 0.86568946, a: 0.08235294}
 --- !u!4 &705429645
 Transform:
   m_ObjectHideFlags: 0
@@ -528,7 +629,7 @@ Transform:
   m_GameObject: {fileID: 705429643}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.19, y: 0, z: 1.56}
+  m_LocalPosition: {x: 23.9, y: 0, z: 28.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -807,4 +908,6 @@ SceneRoots:
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 705429645}
+  - {fileID: 169755703}
+  - {fileID: 328053961}
   - {fileID: 509198603}
