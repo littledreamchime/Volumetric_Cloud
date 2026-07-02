@@ -67,4 +67,4 @@ MonoBehaviour:
   m_Active: 1
   settings:
     cloudMaterial: {fileID: 2100000, guid: bd5b3c3109ed77649b5b536b4421f7a8, type: 2}
-    renderPassEvent: 600
+    renderPassEvent: 400

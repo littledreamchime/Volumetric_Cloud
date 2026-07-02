@@ -517,6 +517,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   volumeSize: {x: 10, y: 10, z: 10}
+  cloudMaterial: {fileID: 2100000, guid: bd5b3c3109ed77649b5b536b4421f7a8, type: 2}
 --- !u!4 &705429645
 Transform:
   m_ObjectHideFlags: 0
